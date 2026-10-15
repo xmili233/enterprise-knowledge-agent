@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { PreviewCard } from "@base-ui/react/preview-card";
-import { FileTextIcon } from "lucide-react";
+import { FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { floating, mono } from "./surfaces";
 
@@ -11,7 +11,8 @@ import { floating, mono } from "./surfaces";
 // trigger opens the cited passage rather than an external page.
 export interface Source {
   title: string;
-  snippet: string;
+  location: string;
+  snippets: string[];
   /** Version, page and similar locators shown above the title. */
   meta?: string | undefined;
   hint?: string | undefined;
@@ -42,11 +43,11 @@ export function Citation({
         delay={0}
         render={<button type="button" {...props} />}
         data-slot="inline-citation-marker"
-        aria-label={`引用 ${index + 1}：${source.title}`}
+        aria-label={`引用 ${index + 1}：${source.title}，${source.location}`}
         className={cn("citation-marker", className)}
       >
-        <FileTextIcon size={14} strokeWidth={1.8} aria-hidden />
-        <span>{index + 1}</span>
+        <FileIcon size={16} strokeWidth={1.8} aria-hidden />
+        <span>{source.title}（{source.location}）</span>
       </PreviewCard.Trigger>
       <PreviewCard.Portal>
         <PreviewCard.Positioner side="top" sideOffset={8}>
@@ -72,11 +73,13 @@ export function Citation({
             >
               {source.title}
             </p>
-            <p className="text-foreground/80 mt-1.5 text-[13px] leading-relaxed">
-              <mark className="bg-[var(--source-highlight)] text-inherit">
-                {source.snippet}
-              </mark>
-            </p>
+            {source.snippets.map((snippet, index) => (
+              <p key={index} className="text-foreground/80 mt-1.5 text-[13px] leading-relaxed">
+                <mark className="bg-[var(--source-highlight)] text-inherit">
+                  {snippet}
+                </mark>
+              </p>
+            ))}
             {source.hint ? (
               <p className="text-muted-foreground mt-2.5 text-xs">
                 {source.hint}

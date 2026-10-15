@@ -108,16 +108,17 @@ describe("assistant-ui 本地适配器", () => {
     ).toEqual(["round-1"]);
   });
 
-  it("引用标记整体出现，不会输出半个编号", async () => {
+  it("合并引用整体出现，不会输出半个链接", async () => {
     const updates = await collect();
     for (const update of updates) {
       const text = update.content?.find((part) => part.type === "text");
       if (text?.type !== "text") continue;
-      expect(text.text).not.toMatch(/\[\d*$|\]\(#c?i?t?e?-?$/);
+      const withoutCitations = text.text.replace(/\[[\d,]+\]\(#cite-[\d,]+\)/g, "");
+      expect(withoutCitations).not.toMatch(/[\[\]]/);
     }
     const final = updates.at(-1)!;
     const text = final.content?.find((part) => part.type === "text");
-    expect(text?.type === "text" && text.text).toContain("[1](#cite-1)");
+    expect(text?.type === "text" && text.text).toContain("[1,2,3](#cite-1,2,3)");
   });
 
   it("完成时附带引用原文、相关度和查找统计", async () => {

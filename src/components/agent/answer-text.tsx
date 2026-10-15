@@ -35,29 +35,35 @@ export const useCitations = () =>
       noCitations,
   );
 
-/** Renders `[n](#cite-n)` links from the answer as numbered citations with a hover preview. */
+/** One document link may cover several exact quotes in the preceding passage. */
 function CitationLink({ href, children, ...props }: ComponentProps<"a">) {
   const citations = useCitations();
   const openSource = useOpenSource();
-  const match = /^#cite-(\d+)$/.exec(href ?? "");
-  const citation = match
-    ? citations.find((item) => item.n === Number(match[1]))
-    : undefined;
-  if (!citation)
+  const match = /^#cite-(\d+(?:,\d+)*)$/.exec(href ?? "");
+  const ids = match?.[1].split(",").map(Number) ?? [];
+  const group = ids
+    .map((n) => citations.find((item) => item.n === n))
+    .filter((item) => item !== undefined);
+  const citation = group[0];
+  if (!citation || group.length !== ids.length)
     return (
       <a href={href} {...props}>
         {children}
       </a>
     );
   const documentId = citation.ref.split(":")[0];
+  const pages = [...new Set(group.map((item) => item.page))].sort((a, b) => a - b);
   return (
     <Citation
       index={citation.n - 1}
       source={{
         title: citation.title,
-        meta: `v${citation.version} · 第 ${citation.page} 页 · 相关度 ${citation.score}/10`,
-        snippet: citation.quote,
-        hint: "点击查看原文中的位置",
+        location: `第 ${pages.join("、")} 页`,
+        meta: group.length > 1
+          ? `v${citation.version} · ${group.length} 处依据`
+          : `v${citation.version} · 相关度 ${citation.score}/10`,
+        snippets: group.map((item) => item.quote),
+        hint: "点击查看原文，可逐处核对",
       }}
       onClick={() => openSource(sourceView(citations, documentId, citation.n))}
     />

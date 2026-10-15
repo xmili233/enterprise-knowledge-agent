@@ -49,13 +49,23 @@ describe("模拟查找的证据契约", () => {
     for (const citation of plan.citations) expect(kept).toContain(citation.ref);
   });
 
-  it.each(plans)("引用编号与引用列表一一对应：%s", (_question, plan) => {
-    const markers = [...plan.answer.matchAll(/\[\[(\d+)\]\]/g)].map((match) =>
-      Number(match[1]),
-    );
+  it.each(plans)("合并引用后仍保留全部原文编号：%s", (_question, plan) => {
+    const groups = [...plan.answer.matchAll(/\[\[([\d,]+)\]\]/g)]
+      .map((match) => match[1].split(",").map(Number));
+    const markers = groups.flat();
     expect(new Set(markers)).toEqual(
       new Set(plan.citations.map((_, index) => index + 1)),
     );
+    for (const group of groups) {
+      expect(new Set(group.map((n) => plan.citations[n - 1].ref.split(":")[0])).size).toBe(1);
+    }
+  });
+
+  it("引导演示按内容合并来源入口，原始依据数量不变", () => {
+    expect(guidedQuestions.map((question) => {
+      const plan = planResearch(question);
+      return [plan.answer.match(/\[\[[\d,]+\]\]/g)?.length, plan.citations.length];
+    })).toEqual([[3, 6], [2, 4], [2, 3]]);
   });
 
   it("改签回答经过补查，并保留公务、个人原因和书面确认", () => {

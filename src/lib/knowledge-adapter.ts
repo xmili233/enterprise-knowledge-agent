@@ -131,10 +131,10 @@ function hit(id: string): SearchHit {
   };
 }
 
-/** Splits the answer into uneven chunks, keeping each `[[n]]` marker whole so a citation never renders half-typed. */
+/** Keep each citation group whole so a source link never renders half-typed. */
 function answerChunks(answer: string) {
-  return answer.split(/(\[\[\d+\]\])/).flatMap((piece) => {
-    const marker = /^\[\[(\d+)\]\]$/.exec(piece);
+  return answer.split(/(\[\[\d+(?:,\d+)*\]\])/).flatMap((piece) => {
+    const marker = /^\[\[(\d+(?:,\d+)*)\]\]$/.exec(piece);
     if (marker)
       return [{ text: `[${marker[1]}](#cite-${marker[1]})`, delay: 60 }];
     const chunks: { text: string; delay: number }[] = [];

@@ -69,40 +69,40 @@
 }
 
 .citation-marker {
-  display: inline-flex;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  gap: 4px;
-  height: 24px;
-  min-width: 36px;
+  display: inline;
+  vertical-align: baseline;
   margin-inline: 4px;
-  padding: 0 6px;
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
-  background: var(--message-background);
-  color: var(--ink);
-  font-size: var(--text-label);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  transform: translateY(-1px);
+  padding: 2px 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--source-link);
+  font: inherit;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
   cursor: pointer;
-  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  transition: color 150ms ease, text-decoration-color 150ms ease;
 }
-.citation-marker > svg { flex: none; }
+.citation-marker > svg {
+  display: inline-block;
+  margin-inline-end: 4px;
+  vertical-align: -2px;
+}
 .citation-marker:hover, .citation-marker[data-popup-open] {
-  border-color: #c9c9c9;
-  background: var(--control-hover);
+  color: var(--source-link-hover);
+  text-decoration-color: currentColor;
 }
 .citation-marker:focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 2px solid var(--source-link);
   outline-offset: 2px;
 }
-.citation-marker:active { border-color: #bdbdbd; background: var(--control-selected); }
+.citation-marker:active { color: var(--source-link-hover); }
 @media (pointer: coarse) {
-  .citation-marker { min-width: 44px; height: 28px; }
+  .citation-marker { padding-block: 4px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .citation-marker { transition: none; }
