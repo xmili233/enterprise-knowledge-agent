@@ -54,6 +54,8 @@ function Mermaid({ children, label }: { children: string; label: string }) {
           securityLevel: "strict",
           theme: "neutral",
           fontFamily: "sans-serif",
+          flowchart: { useMaxWidth: false, nodeSpacing: 36, rankSpacing: 36 },
+          sequence: { useMaxWidth: false, wrap: true },
         });
         const result = await mermaid.render(
           `guide-diagram-${++diagramId}`,
@@ -78,7 +80,15 @@ function Mermaid({ children, label }: { children: string; label: string }) {
       className="guide-diagram"
       ref={ref}
       role="img"
+      tabIndex={0}
       aria-label={`${label}图示`}
+      onKeyDown={(event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        if (event.currentTarget.scrollWidth <= event.currentTarget.clientWidth) return;
+        event.preventDefault();
+        event.currentTarget.scrollBy({ left: event.key === "ArrowRight" ? 80 : -80 });
+      }}
     />
   );
 }

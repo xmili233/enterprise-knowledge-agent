@@ -197,8 +197,9 @@
   margin: 20px 0;
 }
 .guide-diagram svg {
+  display: block;
   margin: 0 auto;
-  max-width: 100%;
+  max-width: none;
   height: auto;
 }
 .diagram-fallback {
