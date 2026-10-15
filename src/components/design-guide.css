@@ -1,7 +1,8 @@
 .design-dialog[data-slot="dialog-content"] {
-  width: calc(100vw - 48px);
-  max-width: 1280px;
-  height: min(960px, calc(100dvh - 48px));
+  /* 1080px reading area and contents, plus 32px padding on each side. */
+  width: min(1144px, calc(100vw - 32px));
+  max-width: none;
+  height: 92dvh;
   padding: 0;
   gap: 0;
   border: none;
@@ -33,19 +34,23 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  padding: 16px 16px 0 0;
+  width: calc(100% - 64px);
+  max-width: 1080px;
+  margin: 0 auto;
+  gap: 40px;
+  padding: 24px 0 0;
 }
 .guide-reading {
   overflow-y: auto;
   flex: 1;
   min-width: 0;
-  padding: 0 24px 60px;
+  padding: 0 0 60px;
   outline: 0;
 }
 .guide-reading > article {
-  max-width: 960px;
+  max-width: none;
   margin: 0 auto;
-  padding: 0 10px;
+  padding: 0;
 }
 .guide-chapter {
   scroll-margin-top: 12px;
@@ -58,14 +63,14 @@
 }
 .guide-chapter h2 {
   margin: 0 0 23px;
-  font-size: 24px;
-  line-height: 32px;
+  font-size: 26px;
+  line-height: 36px;
   font-weight: 600;
   letter-spacing: -0.5px;
 }
 .guide-chapter h3 {
   margin: 28px 0 10px;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 26px;
   font-weight: 600;
 }
@@ -88,8 +93,8 @@
 }
 .guide-chapter p,
 .guide-chapter li {
-  font-size: 14px;
-  line-height: 26px;
+  font-size: 16px;
+  line-height: 28px;
 }
 .guide-chapter p {
   margin: 12px 0;
@@ -144,7 +149,7 @@
 .guide-table table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 24px;
   min-width: 500px;
 }
@@ -160,8 +165,8 @@
   padding: 10px 12px;
 }
 .guide-toc {
-  flex: 0 0 168px;
-  padding: 5px 0 0 16px;
+  flex: 0 0 160px;
+  padding: 5px 0 0;
 }
 .guide-toc p {
   margin: 0 0 14px;
@@ -173,9 +178,9 @@
   width: 100%;
   background: none;
   border: 0;
-  font-size: 12px;
-  color: #777;
-  padding: 8px 0;
+  font-size: 13px;
+  color: #6b6b6b;
+  padding: 10px 0;
   text-align: left;
 }
 .guide-toc button[aria-current] {
@@ -188,20 +193,116 @@
 .guide-mobile-select {
   display: none;
 }
-.guide-diagram {
-  min-height: 120px;
-  overflow: auto;
-  padding: 20px 10px;
-  background: #fafafa;
-  border-radius: 8px;
+.guide-figure {
   margin: 20px 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fafafa;
 }
-.guide-diagram svg {
+.diagram-toolbar {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 16px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.diagram-toolbar figcaption {
+  color: #555;
+  font-size: 13px;
+}
+.diagram-expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-height: 34px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: #333;
+  font-size: 13px;
+}
+.diagram-expand:hover { background: #ededed; }
+.diagram-expand:disabled { color: #888; cursor: default; }
+.diagram-preview {
+  padding: 20px;
+}
+.diagram-preview svg {
   display: block;
-  margin: 0 auto;
-  max-width: none;
+  width: 100%;
   height: auto;
+  max-width: none !important;
 }
+.diagram-preview svg,
+.diagram-preview-placeholder {
+  max-height: 60dvh;
+}
+.diagram-placeholder { display: grid; place-items: center; min-height: 180px; color: #666; font-size: 13px; }
+.diagram-view { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.diagram-canvas { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #fafafa; }
+.diagram-stage { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.diagram-stage > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none !important;
+}
+.diagram-stage .nodeLabel p,
+.diagram-stage .edgeLabel p,
+.diagram-preview .nodeLabel p,
+.diagram-preview .edgeLabel p {
+  margin: 0;
+  font-size: inherit;
+  line-height: 1.4;
+}
+.diagram-fullscreen[data-slot="dialog-content"] {
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  padding: 0;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  translate: none;
+  transform: none;
+  animation: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fafafa;
+  z-index: 60;
+}
+.diagram-fullscreen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60px;
+  padding: 8px 24px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #fff;
+}
+.diagram-fullscreen-header [data-slot="dialog-title"] { font-size: 15px; font-weight: 500; }
+.diagram-fullscreen-header button { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; }
+.diagram-fullscreen-header button:hover { background: #f1f1f1; }
+.diagram-fullscreen > .diagram-view { flex: 1; }
+.is-interactive .diagram-canvas { touch-action: none; cursor: grab; user-select: none; }
+.is-interactive .diagram-stage { pointer-events: none; }
+.is-interactive .diagram-canvas.is-dragging { cursor: grabbing; }
+.diagram-navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; padding: 8px 24px; background: #fff; border-top: 1px solid #e8e8e8; }
+.diagram-hint { color: #777; font-size: 12px; }
+.diagram-controls { display: flex; align-items: center; gap: 4px; }
+.diagram-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 36px; height: 36px; padding: 0 8px; border-radius: 6px; color: #333; font-size: 13px; }
+.diagram-controls button:hover { background: #f1f1f1; }
+.diagram-controls button:disabled { color: #aaa; cursor: default; }
+.diagram-controls output { min-width: 50px; text-align: center; color: #555; font-size: 13px; font-variant-numeric: tabular-nums; }
+.diagram-text-button { margin-left: 6px; }
+.diagram-controls button:focus-visible,
+.diagram-expand:focus-visible,
+.diagram-fullscreen-header button:focus-visible,
+.diagram-canvas:focus-visible { outline: 2px solid #707070; outline-offset: -2px; }
 .diagram-fallback {
   background: #fafafa;
   padding: 12px;
@@ -209,8 +310,8 @@
 }
 @media (max-width: 700px) {
   .design-dialog[data-slot="dialog-content"] {
-    width: calc(100vw - 24px);
-    height: calc(100dvh - 24px);
+    width: calc(100vw - 16px);
+    height: 96dvh;
     border-radius: 12px;
   }
   .guide-header {
@@ -227,10 +328,12 @@
     display: none;
   }
   .guide-layout {
+    width: calc(100% - 36px);
+    gap: 0;
     padding: 12px 0 0;
   }
   .guide-reading {
-    padding: 0 18px 40px;
+    padding: 0 0 40px;
   }
   .guide-reading > article {
     padding: 0;
@@ -238,4 +341,15 @@
   .guide-chapter h2 {
     font-size: 22px;
   }
+  .diagram-toolbar { padding-inline: 10px; gap: 6px; }
+  .diagram-toolbar figcaption { font-size: 12px; }
+  .diagram-preview { padding: 12px; }
+  .diagram-fullscreen-header { padding-inline: 16px; }
+  .diagram-navigation { justify-content: center; flex-wrap: wrap; gap: 4px; padding: 8px 12px max(8px, env(safe-area-inset-bottom)); }
+  .diagram-hint { flex-basis: 100%; text-align: center; }
+}
+@media (pointer: coarse) {
+  .diagram-controls button,
+  .diagram-expand,
+  .diagram-fullscreen-header button { min-height: 44px; min-width: 44px; }
 }

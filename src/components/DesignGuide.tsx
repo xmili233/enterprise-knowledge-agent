@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { MermaidDiagram } from "@/components/MermaidDiagram";
 import overview from "@/content/design/overview.md?raw";
 import scenarios from "@/content/design/scenarios.md?raw";
 import priorities from "@/content/design/priorities.md?raw";
@@ -26,7 +27,6 @@ import retrieval from "@/content/design/retrieval.md?raw";
 import citations from "@/content/design/citations.md?raw";
 import boundaries from "@/content/design/boundaries.md?raw";
 import evals from "@/content/design/evals.md?raw";
-import implementation from "@/content/design/implementation.md?raw";
 import "./design-guide.css";
 
 const chapters = [
@@ -39,59 +39,7 @@ const chapters = [
   { id: "citations", title: "引用与核对", content: citations },
   { id: "boundaries", title: "权限与边界", content: boundaries },
   { id: "evals", title: "评估与观测", content: evals },
-  { id: "implementation", title: "实现与取舍", content: implementation },
 ];
-let diagramId = 0;
-function Mermaid({ children, label }: { children: string; label: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [error, setError] = useState(false);
-  useEffect(() => {
-    let cancelled = false;
-    import("mermaid")
-      .then(async ({ default: mermaid }) => {
-        mermaid.initialize({
-          startOnLoad: false,
-          securityLevel: "strict",
-          theme: "neutral",
-          fontFamily: "sans-serif",
-          flowchart: { useMaxWidth: false, nodeSpacing: 36, rankSpacing: 36 },
-          sequence: { useMaxWidth: false, wrap: true },
-        });
-        const result = await mermaid.render(
-          `guide-diagram-${++diagramId}`,
-          children,
-        );
-        if (!cancelled && ref.current) ref.current.innerHTML = result.svg;
-      })
-      .catch(() => {
-        if (!cancelled) setError(true);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [children]);
-  return error ? (
-    <div className="diagram-fallback">
-      <p>流程图暂时无法显示，以下是图表源码。</p>
-      <pre>{children}</pre>
-    </div>
-  ) : (
-    <div
-      className="guide-diagram"
-      ref={ref}
-      role="img"
-      tabIndex={0}
-      aria-label={`${label}图示`}
-      onKeyDown={(event) => {
-        if (event.altKey || event.ctrlKey || event.metaKey) return;
-        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-        if (event.currentTarget.scrollWidth <= event.currentTarget.clientWidth) return;
-        event.preventDefault();
-        event.currentTarget.scrollBy({ left: event.key === "ArrowRight" ? 80 : -80 });
-      }}
-    />
-  );
-}
 // The chapter title is the section's h2, so the chapter's own headings start at h3.
 function Markdown({ children, label }: { children: string; label: string }) {
   return (
@@ -109,7 +57,7 @@ function Markdown({ children, label }: { children: string; label: string }) {
           ),
         code: ({ className, children }) =>
           className === "language-mermaid" ? (
-            <Mermaid label={label}>{String(children).trim()}</Mermaid>
+            <MermaidDiagram label={label}>{String(children).trim()}</MermaidDiagram>
           ) : (
             <code className={className}>{children}</code>
           ),
@@ -198,7 +146,7 @@ export default function DesignGuide({
         <header className="guide-header">
           <DialogTitle>设计讲解</DialogTitle>
           <DialogDescription className="sr-only">
-            企业知识助手的场景拆解、准确性取舍、Agent 设计与当前实现
+            企业知识助手的场景拆解、Agent 流程、证据判断与能力边界
           </DialogDescription>
           <DialogClose asChild>
             <Button variant="ghost" size="icon" aria-label="关闭设计讲解">
