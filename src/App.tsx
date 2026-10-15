@@ -22,6 +22,7 @@ import { knowledgeAdapter } from "@/lib/knowledge-adapter";
 import { createThreadAdapter } from "@/lib/thread-adapter";
 import { ThreadStore } from "@/lib/thread-store";
 import { useSectionPaging } from "@/lib/use-section-paging";
+import githubMark from "@/assets/github-mark.svg";
 import "./app.css";
 import "./workspace.css";
 
@@ -102,16 +103,29 @@ function Workspace() {
               <span>企业内部知识助手</span>
             </div>
           )}
-          <Button
-            ref={guideRef}
-            variant="ghost"
-            className="design-entry"
-            onClick={() => {
-              location.hash = "design/overview";
-            }}
-          >
-            设计讲解
-          </Button>
+          <nav className="project-links" aria-label="项目相关">
+            <Button
+              ref={guideRef}
+              className="design-entry"
+              aria-haspopup="dialog"
+              onClick={() => {
+                location.hash = "design/overview";
+              }}
+            >
+              <BookOpen size={14} aria-hidden="true" />
+              设计讲解
+            </Button>
+            <a
+              className="github-entry"
+              href="https://github.com/xmili233/enterprise-knowledge-agent"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="在 GitHub 查看源代码"
+              title="在 GitHub 查看源代码"
+            >
+              <img src={githubMark} width={20} height={20} alt="" />
+            </a>
+          </nav>
         </header>
         <section className="assistant-section" aria-label="提问与对话">
           {storageError && (

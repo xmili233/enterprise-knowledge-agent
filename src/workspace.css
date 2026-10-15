@@ -14,9 +14,12 @@
   padding: 0 24px;
   background: var(--canvas);
 }
-.workspace-header .design-entry {
+.project-links {
+  display: flex;
+  align-items: center;
   margin-left: auto;
   flex: none;
+  gap: 8px;
 }
 .workspace-brand {
   display: inline-flex;

@@ -48,18 +48,47 @@ button:disabled {
   top: 12px;
 }
 .design-entry[data-slot="button"] {
-  font-size: 13px;
-  font-weight: 400;
-  padding: 0;
-  height: auto;
-  background: none;
-  border-radius: 0;
-  color: #666;
+  font-size: var(--text-label);
+  font-weight: 500;
+  line-height: 20px;
+  gap: 6px;
+  padding: 0 12px;
+  height: 30px;
+  border: 0;
+  background: #333;
+  border-radius: var(--radius-control);
+  color: #fff;
+}
+.design-entry svg {
+  width: 14px;
+  height: 14px;
 }
 .design-entry:hover {
-  color: #171717;
-  text-decoration: underline;
-  text-underline-offset: 5px;
+  background: #555;
+}
+.github-entry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 30px;
+  border-radius: var(--radius-control);
+}
+.github-entry:hover {
+  background: var(--control-hover);
+}
+.github-entry img {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+@media (pointer: coarse) {
+  .design-entry[data-slot="button"],
+  .github-entry {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
 .empty-state {
   text-align: center;
@@ -219,9 +248,6 @@ button:disabled {
   }
 }
 @media (max-width: 700px) {
-  .design-entry[data-slot="button"] {
-    font-size: 12px;
-  }
   .source-header {
     padding: 28px 22px 20px;
   }
