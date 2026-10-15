@@ -7,7 +7,7 @@
 | 查找过程 | `src/lib/research.ts` 预设九个场景，按关键词匹配；`src/lib/knowledge-adapter.ts` 把查找过程回放为 assistant-ui 的消息片段 |
 | 会话 | assistant-ui 的 `useLocalRuntime` 管理消息流、发送、停止和滚动；引导演示依次发送三个预设问题，输入框不能修改；回答底部不提供复制或重新查找操作 |
 | 过程展示 | RunActivity 按轮次折叠思考和工具调用；检索与证据工具通过 `makeAssistantToolUI` 注册界面 |
-| 回答与引用 | MarkdownText 渲染正文，行内引用预览原文；DocumentReference 在回答下方汇总引用文件 |
+| 回答与引用 | MarkdownText 渲染正文，句子旁的黑底引用标记提供预览和原文定位；原文面板支持同一文件内多处引用切换 |
 | 原文面板 | shadcn/ui 抽屉，句子级高亮，可在多处引用之间跳转 |
 | 知识库浏览 | 访达式文件夹网格，文件和文件夹在同一目录中统一搜索 |
 | 资料 | `src/data/knowledge.ts`：6 个文件夹、11 份虚构文件 |

@@ -3,7 +3,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { RunActivity } from "./run-activity";
 import { RetrievalChunks } from "./retrieval-chunks";
-import { DocumentReference } from "./document-reference";
 
 describe("知识问答组件的数据表达", () => {
   it("收起过程仍保留回答，并显示最近的进行中活动", () => {
@@ -34,19 +33,5 @@ describe("知识问答组件的数据表达", () => {
     expect(html).toContain("采用");
     expect(html).toContain("排除");
     expect(html).toContain("查看差旅制度 · 第 4 页的原文");
-  });
-
-  it("同页的两处引用有各自的操作名称，只有所选引用高亮", () => {
-    const html = renderToStaticMarkup(createElement(DocumentReference, {
-      title: "差旅制度", meta: "v2.1 · 2 处引用", activeIndex: 1, onJump() {},
-      anchors: [
-        { page: 4, label: "引用 1", quote: "公务改签可以申请报销" },
-        { page: 4, label: "引用 2", quote: "需取得书面确认" },
-      ],
-    }));
-    expect(html).toContain("查看差旅制度的引用 1原文");
-    expect(html).toContain("查看差旅制度的引用 2原文");
-    expect(html.match(/aria-current="true"/g)).toHaveLength(1);
-    expect(html).not.toContain("总页数");
   });
 });
