@@ -1,170 +1,83 @@
 # 企业知识助手
 
-面向企业员工的内部资料检索与问答产品。员工可以直接提问，也可以浏览企业知识库，从制度规范、财务报销、人事行政等资料中查找依据，并通过回答中的引用核对原文。
+面向企业内部制度、报销及人事资料查询的前端交互原型，重点展示查找进展、证据筛选、回答引用与原文核对。设计场景是让员工既能看到处理条件，也能找到支持结论的文件依据。
 
-## 项目阶段
+在线版采用**三步预设问答与虚构企业资料**，不连接真实模型或企业检索服务。
 
-当前已实现可运行的前端交互演示，并通过 GitHub Pages 提供在线体验，无需安装或注册：
+## 在线体验
 
-- [打开企业知识助手](https://xmili233.github.io/enterprise-knowledge-agent/)
-- [直接阅读设计讲解](https://xmili233.github.io/enterprise-knowledge-agent/#design/overview)
-- [查看源代码](https://github.com/xmili233/enterprise-knowledge-agent)
+[打开知识助手](https://xmili233.github.io/enterprise-knowledge-agent/) · [阅读设计讲解](https://xmili233.github.io/enterprise-knowledge-agent/#design/overview) · [查看源码](https://github.com/xmili233/enterprise-knowledge-agent)
 
-首阶段以可交互的前端演示呈现完整使用流程，使用明确标注的虚构企业资料与预设问答。真实文档解析、检索、模型调用和企业权限系统属于后续接入范围。
+已通过 GitHub Pages 上线，无需安装或注册。建议按以下顺序体验：
 
-## 面向用户与使用场景
+1. 发送输入框中预填的“出差改签费可以报销吗？”。输入框为只读，引导演示按预设顺序进行。
+2. 查看查找过程中的轮次、目标、进度与候选评分；回答开始后，过程默认收起，仍可展开查看。
+3. 点击回答中的引用，核对文件版本、章节、页码与高亮原文；同一文件的多处引用可分别定位。
+4. 继续发送页面给出的报销提交、文件外发问题。点击“返回首页”可从第一步重新体验，也可下滑浏览文件夹与文档。
 
-- **企业员工**：查询报销条件、请假规定、审批流程和日常操作规范。
-- **财务、人事与行政人员**：让员工更容易找到现行制度，减少重复解释，并明确回答的依据和适用条件。
-- **制度与知识库维护人员**：按主题组织资料，区分文件版本，帮助员工定位原文。
+## 实现重点与取舍
 
-产品首先解决“这件事应该怎么办、依据在哪里”，让员工从自然语言问题走到可核对的内部文件。
+技术栈：React 19、TypeScript、Vite、Tailwind CSS、shadcn/ui 与 assistant-ui。
 
-## 页面结构
+| 实现重点 | 做法与取舍 | 主要代码 |
+| --- | --- | --- |
+| 会话运行时与流式输出 | 使用 assistant-ui 管理消息、发送、取消和滚动；本地 `ChatModelAdapter` 逐步输出思考、工具调用结果与正文，响应 `AbortSignal`。将过程数据与界面分离，沿用框架的会话生命周期。 | [knowledge-adapter.ts](./src/lib/knowledge-adapter.ts)、[KnowledgeAssistant.tsx](./src/components/KnowledgeAssistant.tsx) |
+| 查找过程的信息层级 | 按轮次关联目标、检索范围与筛选结果，使用紧凑评分行展示采用或排除的原因；详细原文按需打开，避免过程占据整个对话。 | [research-process.tsx](./src/components/agent/research-process.tsx)、[tool-uis.tsx](./src/components/agent/tool-uis.tsx) |
+| 引用与原文映射 | 将引用编号关联到文件、段落与逐字摘录，支持行内预览、原文定位和同文件多处引用切换。高亮使用摘录在段落中的实际位置，使引用能落到具体句子。 | [answer-text.tsx](./src/components/agent/answer-text.tsx)、[SourcePanel.tsx](./src/components/SourcePanel.tsx)、[knowledge.ts](./src/data/knowledge.ts) |
+| 提问与资料浏览的边界 | 首页通过两屏吸附连接提问与文件浏览；进入聊天后只保留对话内部滚动，避免误滑进知识库。目录支持文件与文件夹混排、搜索、路径返回和键盘打开。 | [App.tsx](./src/App.tsx)、[use-section-paging.ts](./src/lib/use-section-paging.ts)、[KnowledgeLibrary.tsx](./src/components/KnowledgeLibrary.tsx) |
 
-空白首页在同一页面上下浏览，没有侧栏、折叠按钮或历史列表。首屏居中提问，底部提供类似 OpenAI 首页的向下探索入口，知识库直接位于下方。
+## 当前范围与边界
 
-```text
-┌──────────────────────────────────────────┐
-│                                 设计讲解 │
-│                                          │
-│            有什么可以帮你？              │
-│   ┌──────────────────────────────────┐   │
-│   │ 询问制度、流程，或查找一份文件    │   │
-│   │                            [发送]│   │
-│   └──────────────────────────────────┘   │
-│                                          │
-│            ↓ 向下浏览知识库               │
-├──────────────────────────────────────────┤
-│ 企业知识库                        搜索   │
-│ 文件与文件夹共用网格，无分类分栏          │
-│ 蓝色文件夹图标 → 文档图标 → 原文预览      │
-└──────────────────────────────────────────┘
-```
+- **页面只开放三个预设问题**：改签报销、报销提交和文件外发。支持停止输出、继续下一步和返回首页，不支持自由输入、上传文件或补充资料。
+- **查找过程与答案由脚本提供**：检索路径、候选评分、引用和回答均预先编写。0–10 相关度用于演示筛选逻辑，不是实际模型评分或检索效果指标。
+- **资料浏览可独立使用**：演示知识库包含 6 个文件夹、11 份虚构文件，其中 2 份在根目录。搜索匹配当前目录的文件或文件夹名称，不改变问答使用的演示资料范围。
+- **会话只保存在当前浏览器**：返回首页保留已有记录，但当前没有历史管理入口，也没有跨设备同步或企业账号系统。
+- **真实 Agent 能力属于设计方案**：文档解析、混合检索、自主补查、模型生成、权限过滤和版本有效性校验尚未实现；相关方案在设计讲解中单独说明。
 
-### 提问与对话
+底层场景数据还包含年假、采购、会议室以及依据不足等测试用例，用于验证适配器和引用契约，不代表在线页面开放了这些问答入口。
 
-- 对话采用引导演示：输入框预先填好当前步骤的问题且不可修改，只能发送，依次体验改签报销、报销提交和文件外发三个能找到依据的场景；走完后可重新开始，「返回首页」也会回到第一步。所有问题统一使用全部演示资料。
-- 提问后出现消息与单行续问框，移除下方知识库并停用切屏手势；长对话在首屏区域内滚动，滚到底部也不会进入知识库。返回首页后恢复首页浏览。
-- 聊天页左上角提供“← 返回首页”，返回空白首页并聚焦输入框，原聊天记录继续保存在本地。
-- 本地适配器继续保存会话数据，不删除已有记录；当前不提供历史浏览和删除界面，数据不跨设备同步。
+## 本地运行
 
-### 下方知识库
-
-- 仅在空白首页直接下滑或点击“向下浏览知识库”自动停靠第二屏，不停在两屏之间。左上方“返回首页”回到提问框，文件夹内同样可用；也可向上滑回。
-- 内容较长时允许在文件区内滚动；输入框、长对话与原文面板的内部滚动独立于外层切屏。
-- 知识库按最新参考图居中排列，容器最大宽度 1120px，桌面一行六个文件夹；图标与名称放大，手机通常为两列。
-- 文件夹与独立文件共用同一个网格，不再显示分类分栏。
-- 参考 macOS 访达图标视图：蓝色文件夹表示目录，纸张图标表示文件；根目录包含 6 个文件夹和 2 份独立文件，文件名称下显示版本和更新日期。
-- 单击、Enter 或手机轻触打开；通过单行路径中的“知识库”回到根目录。点击文件打开原文预览。
-- 搜索统一为“搜索文件或文件夹”，同时匹配当前目录中的两类项目。
-- 目录仅在空白首页提供；浏览和搜索不改变问答数据范围。
-
-## 核心使用流程
-
-1. **提出问题**：在首屏输入问题，或向下浏览知识库文件。
-2. **查找依据**：展示搜索、阅读和必要的补查进展，使用简明的操作摘要。
-3. **阅读回答**：给出结论、适用条件、需要确认的信息，以及支持结论的引用。
-4. **核对原文**：点击引用，在原文面板中查看对应文件、版本、页码或章节与高亮片段。
-5. **补充信息**：资料不足或条件不明确时，说明缺口，允许继续追问或补充资料后重新查证。
-
-以“出差改签费可以报销吗”为例，回答需要区分公务安排变更与个人原因，保留审批条件，并让员工点开对应制度核对。所有演示制度、条件和结论均应标注为虚构示例。
-
-## 回答与引用原则
-
-- 检索到相关资料、引用成功关联原文、结论得到原文支持，是三个不同层次，不混用状态文案。
-- 不省略决定结论的条件、例外和适用范围。
-- 引用应对应具体文件版本与原文位置，不能让模型自行编造来源信息。
-- 当前资料无法支持结论时，明确说明缺少什么，不用无依据的确定性回答补全。
-- 真实系统需要按员工权限限定可检索资料，并管理文件生效与失效状态；前端演示不声称已经实现这些后端能力。
-
-## 设计讲解
-
-在内容区顶部保留统一的“设计讲解”入口，以 [Muse 的设计讲解](https://github.com/xmili233/muse-canvas#设计讲解)为参考：大尺寸阅读弹窗、连续正文、右侧目录、窄屏章节选择器及章节直达链接。
-
-讲解按设计时的决策顺序组织，参照 Muse 的写法：每章开头说明当前演示做到哪一步，先用编号列出「怎么设计」，再按相同编号解释「为什么这样设计」，章末列出参考资料。
-
-1. **概览**：核心判断、整体流程与五条设计原则。
-2. **场景拆解**：员工查资料的六类问题、企业资料的共同特点，以及它们如何决定查找深度和回答结构。
-3. **准确性优先**：出错代价分析、「准确」拆成的六个环节，以及为此付出的速度和成本代价。
-4. **参考项目**：RAGFlow、PaperQA2、Onyx、Kotaemon 各取什么、不取什么，以及为什么不直接选用其中一个。
-5. **资料入库**：按文档类型分块、元数据登记、人工校对和版本更新。
-6. **检索与补查**：工具划分、混合检索、逐段打分、按缺口补查和停止条件。
-7. **引用与核对**：证据登记、句子级引用、逐字校验和失败降级。
-8. **权限与边界**：检索时的权限过滤、现行版本、冲突处理，以及资料以外问题的拒答示例。
-9. **评估与观测**：按场景分层的评测集、指标优先级和查找记录。
-10. **实现与取舍**：当前实现、前端与服务的契约、主要取舍和演进顺序。
-
-章节内容维护在 `src/content/design/`，章节列表在 `src/components/DesignGuide.tsx`。
-
-## 参考的开源项目
-
-本项目的检索问答流程、证据展示与设计讲解参考了以下四个开源项目。当前借鉴的是它们的设计思路，尚未引入上游代码或确定后端选型。
-
-| 项目 | 重点借鉴 |
-| --- | --- |
-| [RAGFlow](https://github.com/infiniflow/ragflow) | 复杂文档解析、分块、检索与证据来源管理 |
-| [PaperQA2](https://github.com/Future-House/paper-qa) | 搜索、收集证据、生成回答及继续补查的流程 |
-| [Onyx](https://github.com/onyx-dot-app/onyx) | 企业知识搜索、上下文管理与引用映射 |
-| [Kotaemon](https://github.com/Cinnamon/kotaemon) | 文档问答、原文阅读和引用高亮 |
-
-这些项目的能力存在重叠，不要求同时接入四套系统。设计讲解的「参考项目」一章说明各项设计借鉴了哪个项目、其实现原理和能力边界，并区分参考思路、前端模拟与实际接入。
-
-## 运行与开发
-
-采用 React + TypeScript + Vite + Tailwind CSS，UI 组件使用 shadcn/ui（Radix）。布局以[用户最新确认的参考图](docs/reference-scroll-layout.png)为依据：全宽白色画布、居中欢迎语、最大宽 800px 的提问框，以及首屏底部的向下浏览入口。输入框最小高 140px，消息使用浅灰气泡；知识库直接位于页面下方。桌面和手机的空白首页左上角保留单色书本图标与“企业内部知识助手”名称，进入聊天后隐藏，不使用侧栏与菜单，也没有会员、语音或附件占位按钮。
-
-需要 Node.js 20.19+（20.x）或 22.12+，以及 npm。
+推荐使用 **Node.js 24** 和 npm，与 CI 的运行版本一致。当前测试依赖不支持 Node.js 20。
 
 ```bash
 npm ci
 npm run dev
 ```
 
-打开终端输出的本地地址。生产构建与验证：
+访问终端输出的本地地址。验证与生产预览：
 
 ```bash
-npm test
-npm run build
-npm run preview
+npm test        # 运行现有测试
+npm run build   # TypeScript 检查与生产构建
+npm run preview # 预览 dist/ 中的构建结果
 ```
 
-### assistant-ui 接入
+测试覆盖预设资料与引用的一致性、摘录逐字匹配、证据阈值、引用编号、依据不足场景、流式片段顺序、取消和本地会话保存。主要测试：[场景与引用契约](./src/lib/research.test.ts)、[流式适配器](./src/lib/knowledge-adapter.test.ts)、[本地会话存储](./src/lib/thread-store.test.ts)、[引用组件](./src/components/assistant-ui/elements/knowledge-elements.test.tsx)。这些测试不衡量真实检索召回率或模型回答准确率。
 
-实际安装 `@assistant-ui/react`，使用 `useLocalRuntime` 与 `ChatModelAdapter`。消息记录、发送、取消与滚动由 assistant-ui 管理；`ThreadPrimitive`、`ComposerPrimitive` 和 `MessagePrimitive` 负责聊天交互。回答底部不提供复制或重新查找操作。shadcn/ui 继续负责抽屉和设计讲解。
+推送到 `main` 后，[GitHub Actions](./.github/workflows/deploy.yml) 会运行测试和构建，再发布到 GitHub Pages。线上构建使用 `npm run build -- --base=/enterprise-knowledge-agent/`，构建产物为静态站点。
 
-- `src/components/KnowledgeAssistant.tsx`：聊天入口、消息列表、输入与操作栏。
-- `src/App.tsx`：提问区、底部滚动入口与下方知识库。
-- `src/lib/use-section-paging.ts`：只在空白首页按滚轮与触摸方向切屏，聊天时解绑；长目录和输入区域优先滚动自身。
-- `src/components/KnowledgeLibrary.tsx`、`FileIcons.tsx`：访达式文件夹浏览、文档图标、目录路径与统一搜索。
-- `src/lib/thread-adapter.ts`、`src/lib/thread-store.ts`：对接 assistant-ui 的会话列表与消息历史，保存标题、消息、分支和引用元数据。
-- `src/lib/research.ts`：每个预设场景的模拟查找过程（思考、检索、证据打分、补查）与带句子摘录的引用。
-- `src/lib/knowledge-adapter.ts`：本地适配器，把模拟查找按顺序输出为 assistant-ui 的思考、工具调用和正文片段。`AbortSignal` 终止模拟查找。
-- 聊天区保留欢迎语、输入框与发送操作；已有消息时通过 `ThreadListPrimitive.New` 新建对话，当前不展示历史列表。
-- `src/components/agent/`：查找过程折叠区、检索与收集证据的工具界面（`makeAssistantToolUI`）、带引用预览的正文、依据标记与来源汇总。
-- `src/components/assistant-ui/`：从 assistant-ui 官方 shadcn 注册表引入并本地适配的 RunActivity、Reasoning、MarkdownText、WebSearch、RetrievalChunks、DocumentReference 与行内引用组件。保留工具调用在消息里的视觉层次，文案改为中文；许可证见 `docs/assistant-ui-LICENSE.txt`。
-- `src/components/SourcePanel.tsx`：原文抽屉，按引用高亮具体句子，同一文件的多处引用可逐处跳转。
+## 设计资料与参考
 
-assistant-ui 是本项目实际使用的前端会话框架，不提供企业文档检索或后端 Agent 决策能力。将来接入服务时可替换适配器内的本地问答逻辑，仍需后端提供检索结果、来源映射、权限与流式进展。
+- [PRODUCT.md](./PRODUCT.md)：使用场景与产品边界。
+- [DESIGN.md](./DESIGN.md)：布局、视觉、交互与设计决策。
+- [设计讲解章节](./src/content/design/)：场景拆解、准确性取舍，以及文档入库、检索、引用、权限和评估方案；可在[线上阅读](https://xmili233.github.io/enterprise-knowledge-agent/#design/overview)。
 
-### 演示内容
+### 参考的开源项目
 
-- 6 个文件夹、11 份虚构文件（其中 2 份位于根目录），内容维护在 `src/data/knowledge.ts`。
-- 支持改签报销、报销流程、年假申请、文件外发、设备采购及会议室预订说明等预设场景。
-- `src/lib/research.ts` 通过关键词匹配场景，不调用模型或真实检索服务。任意问题不保证可理解，未覆盖场景经过两轮检索后明确提示依据不足。
-- 回答前在同一条消息内展示模拟查找：标明每轮查找目标与进度，用行内文件链接和紧凑评分行展示范围、0–10 相关度、筛选摘要与采用/排除理由；证据不足时补查一轮（参考 PaperQA2 与 Onyx）。RunActivity 在查找时展开、回答开始后默认收起，用户可主动控制；原文通过来源链接按需打开。
-- 可停止查找、继续提问；问答数据存于当前浏览器，当前不提供历史浏览界面。
-- 点击文件夹浏览文档图标；点击文档预览原文。悬停回答引用预览原文句子，点击后高亮这句话（参考 Kotaemon）；回答底部可展开引用文档，点击同页的不同引用仍分别定位（参考 Onyx）。
-- 顶部「设计讲解」提供十章连续阅读，支持 `#design/overview` 等直达链接、右侧目录、移动端章节选择、Escape / 遮罩关闭和焦点恢复。
+以下项目用于研究检索问答与证据组织方式。这里借鉴的是设计思路，未集成这四个项目的代码或服务，也未确定后端选型。
 
-### 验证与设计资料
+| 项目 | 参考方向 |
+| --- | --- |
+| [RAGFlow](https://github.com/infiniflow/ragflow) | 文档解析、分块与证据来源管理 |
+| [PaperQA2](https://github.com/Future-House/paper-qa) | 搜索、收集证据、生成回答与补查的流程 |
+| [Onyx](https://github.com/onyx-dot-app/onyx) | 企业知识搜索、上下文组织与引用映射 |
+| [Kotaemon](https://github.com/Cinnamon/kotaemon) | 文档问答、原文阅读与引用高亮 |
 
-单元测试覆盖查找过程与资料的对应、引用摘录逐字出自原文、只引用通过阈值的证据、个人余额无法推断、证据不足场景，以及适配器的片段顺序、引用编号完整输出与取消。浏览器验证覆盖桌面与手机下的首屏布局、滚轮下滑、锚点跳转、新对话、文件夹进出、文件搜索、键盘打开、引用和设计讲解。
+具体取舍见设计讲解的[参考项目](https://xmili233.github.io/enterprise-knowledge-agent/#design/references)章节。
 
-设计规范由 [gstack design-consultation](https://github.com/garrytan/gstack/tree/main/design-consultation) 工作流结合用户确认的参考图制定，见 [DESIGN.md](DESIGN.md)。颜色、主要尺寸与圆角统一在 `src/design-tokens.css`，项目 `AGENTS.md` 要求后续视觉修改遵守这份规范。组件及布局参数是本项目自己的实现，不代表 OpenAI 官方组件规范。
+### 使用的组件与设计辅助
 
-### 部署到 GitHub Pages
-
-所有功能都在浏览器中完成，构建产物是静态站点，由 GitHub Pages 托管；不需要部署模型服务、后端或数据库。
-
-推送到 `main` 后，[GitHub Actions 工作流](./.github/workflows/deploy.yml)会安装依赖、运行测试、构建站点，再把 `dist/` 发布到 GitHub Pages；也可以在 [Actions 页面](https://github.com/xmili233/enterprise-knowledge-agent/actions/workflows/deploy.yml)手动触发。线上构建使用 `npm run build -- --base=/enterprise-knowledge-agent/`，仓库的 **Settings → Pages → Source** 配置为 **GitHub Actions**。在线版本的问答记录同样只保存在访问者自己的浏览器中。
+- **assistant-ui** 是实际使用的前端会话框架，不承担后端检索与 Agent 决策。从其官方注册表引入并适配了过程展示、文档引用等组件，代码见 [src/components/assistant-ui/](./src/components/assistant-ui/)，许可见 [docs/assistant-ui-LICENSE.txt](./docs/assistant-ui-LICENSE.txt)。
+- 界面交互使用 shadcn/ui；设计讲解的阅读布局参考 [Muse](https://xmili233.github.io/muse-canvas/#design/overview)。设计规范制定时使用了 [gstack design-consultation](https://github.com/garrytan/gstack/tree/main/design-consultation) 作为辅助，最终规范记录在 [DESIGN.md](./DESIGN.md)。
+- GitHub 图标来源与许可见 [public/THIRD_PARTY_NOTICES.txt](./public/THIRD_PARTY_NOTICES.txt)。
