@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { ResearchProcess } from "@/components/agent/research-process";
 import { AnswerText } from "@/components/agent/answer-text";
-import { AnswerFooter } from "@/components/agent/answer-footer";
 import { guidedQuestions } from "@/lib/research";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import "./knowledge-assistant.css";
@@ -294,6 +293,7 @@ function AssistantMessage() {
     (s) =>
       s.message.status?.type === "running" && s.message.parts.length === 0,
   );
+  const stopped = useAuiState((s) => s.message.status?.type === "incomplete");
 
   return (
     <MessagePrimitive.Root
@@ -319,7 +319,7 @@ function AssistantMessage() {
           }
         }}
       </MessagePrimitive.GroupedParts>
-      <AnswerFooter />
+      {stopped && <p className="answer-stopped" role="status">已停止查找。</p>}
     </MessagePrimitive.Root>
   );
 }

@@ -79,10 +79,10 @@
   min-width: 36px;
   margin-inline: 4px;
   padding: 0 6px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--hairline);
   border-radius: 6px;
-  background: var(--ink);
-  color: #fff;
+  background: var(--message-background);
+  color: var(--ink);
   font-size: var(--text-label);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
@@ -93,14 +93,14 @@
 }
 .citation-marker > svg { flex: none; }
 .citation-marker:hover, .citation-marker[data-popup-open] {
-  border-color: #404040;
-  background: #404040;
+  border-color: #c9c9c9;
+  background: var(--control-hover);
 }
 .citation-marker:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
-.citation-marker:active { border-color: #111; background: #111; }
+.citation-marker:active { border-color: #bdbdbd; background: var(--control-selected); }
 @media (pointer: coarse) {
   .citation-marker { min-width: 44px; height: 28px; }
 }
@@ -139,20 +139,6 @@
   margin-top: 0;
 }
 
-.answer-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 20px;
-}
-.answer-outcome {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  color: var(--secondary-ink);
-  font-size: var(--text-caption);
-}
 .answer-stopped {
   margin: 4px 0 0;
   color: var(--muted-ink);
