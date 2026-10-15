@@ -1,111 +1,65 @@
-import { useState, type ReactNode } from "react";
-import { useAuiState } from "@assistant-ui/react";
-import {
-  CheckIcon,
-  ChevronRightIcon,
-  CircleDashedIcon,
-  LoaderIcon,
-} from "lucide-react";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-  CollapsibleTrigger,
-} from "@/components/assistant-ui/elements/collapsible-root";
-import type { KnowledgeMessage, ResearchRound as Round } from "@/lib/knowledge-adapter";
+import { useRef, useState } from "react";
+import { MessagePrimitive, useAuiState, useScrollLock } from "@assistant-ui/react";
+import { CheckIcon } from "lucide-react";
+import { Reasoning } from "@/components/assistant-ui/elements/reasoning.aui";
+import { RunActivity, type RunActivityEntry, type RunActivityStatus } from "@/components/assistant-ui/elements/run-activity";
+import type { KnowledgeMessage } from "@/lib/knowledge-adapter";
 
-const kindLabel: Record<Round["kind"], string> = {
-  search: "查找",
-  recheck: "补查",
-  synthesis: "",
-};
+/** One disclosure per reply; its entries keep the runtime's original part order. */
+export function ResearchProcess({ indices }: { indices: readonly number[] }) {
+  const parts = useAuiState((s) => s.message.parts);
+  const status = useAuiState((s) => s.message.status);
+  const custom = useAuiState((s) => s.message.metadata.custom as KnowledgeMessage | undefined);
+  const [manualOpen, setManualOpen] = useState<boolean | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const lockScroll = useScrollLock(rootRef, 220);
+  const running = status?.type === "running" && !parts.some((part) => part.type === "text");
+  const stopped = status?.type === "incomplete";
+  const phase: RunActivityStatus = running ? "running" : stopped ? "cancelled" : "complete";
+  const rounds = custom?.rounds ?? [];
+  const searches = rounds.filter((round) => round.kind !== "synthesis").length;
 
-const useCustom = () =>
-  useAuiState((s) => s.message.metadata.custom as KnowledgeMessage | undefined);
-
-/** Quiet heading over the rounds; it states that the process is simulated. */
-export function ResearchProcess({ children }: { children: ReactNode }) {
-  const custom = useCustom();
-  const running = useAuiState((s) => s.message.status?.type === "running");
-  const rounds = custom?.rounds?.filter((round) => round.kind !== "synthesis");
-  const elapsed = custom?.elapsed
-    ? ` · 用时 ${Math.max(1, Math.round(custom.elapsed / 1000))} 秒`
-    : "";
-  return (
-    <div className="research-process">
-      <p className="research-process-head">
-        {running || !rounds?.length
-          ? "查找过程 · 模拟"
-          : `查找过程 · ${rounds.length} 轮${elapsed} · 模拟`}
-      </p>
-      {children}
-    </div>
-  );
-}
-
-/**
- * One research round. It is open only while it is the round being worked on,
- * then folds into a single row with its result as the next round begins.
- */
-export function ResearchRound({
-  id,
-  children,
-}: {
-  id: string;
-  children: ReactNode;
-}) {
-  const [manual, setManual] = useState<boolean | null>(null);
-  const round = useAuiState((s) =>
-    (s.message.metadata.custom as KnowledgeMessage | undefined)?.rounds?.find(
-      (item) => item.id === id,
-    ),
-  );
-  // The newest part decides which round is live, so pauses between a round's
-  // steps never fold it early.
-  const phase = useAuiState((s) => {
-    const last = s.message.parts.at(-1);
-    const current =
-      (last?.type === "reasoning" || last?.type === "tool-call") &&
-      last.parentId === id;
-    if (!current) return "done";
-    if (s.message.status?.type === "running") return "active";
-    if (s.message.status?.type === "incomplete") return "stopped";
-    return "done";
+  const entries: RunActivityEntry[] = indices.flatMap((index) => {
+    const part = parts[index];
+    if (part.type !== "reasoning" && part.type !== "tool-call") return [];
+    const round = rounds.find((item) => item.id === part.parentId);
+    const complete = Boolean(round?.summary) || (!running && !stopped);
+    const current = !complete && round?.id === rounds.at(-1)?.id;
+    const label = part.type === "reasoning"
+      ? round?.title ?? "查找思路"
+      : part.toolName === "search_knowledge" ? "检索企业文档" : "筛选依据";
+    return [{
+      id: part.type === "tool-call" ? part.toolCallId : `commentary-${index}`,
+      kind: part.type === "reasoning" ? "commentary" : "tool",
+      label,
+      content: part.type === "reasoning" ? (
+        <div className="activity-round">
+          <div className="activity-round-heading">
+            {complete ? <CheckIcon size={14} aria-hidden /> : <span className="activity-round-marker" aria-hidden />}
+            <strong>{round?.kind === "search" ? "查找：" : round?.kind === "recheck" ? "补查：" : ""}{label}</strong>
+            <span className="activity-round-state">{complete ? "已完成" : current && stopped ? "已停止" : current ? "进行中" : ""}</span>
+          </div>
+          <div className="activity-commentary"><MessagePrimitive.PartByIndex index={index} components={{ Reasoning }} /></div>
+        </div>
+      ) : (
+        <div className="activity-tool"><MessagePrimitive.PartByIndex index={index} components={{}} /></div>
+      ),
+    }];
   });
-  const open = manual ?? phase === "active";
-  const kind = round ? kindLabel[round.kind] : "查找";
-  const Icon =
-    phase === "active"
-      ? LoaderIcon
-      : phase === "stopped"
-        ? CircleDashedIcon
-        : CheckIcon;
 
   return (
-    <CollapsibleRoot
-      open={open}
-      onOpenChange={setManual}
-      className="research-round"
-      data-phase={phase}
-    >
-      <CollapsibleTrigger className="research-round-trigger">
-        <Icon className="research-round-icon" aria-hidden />
-        <span className="research-round-text">
-          {kind && <span className="research-round-kind">{kind}：</span>}
-          <span className={phase === "active" ? "shimmer" : undefined}>
-            {round?.title ?? "查找资料"}
-          </span>
-          {!open && phase === "stopped" && (
-            <span className="research-round-summary"> · 已停止</span>
-          )}
-          {!open && phase === "done" && round?.summary && (
-            <span className="research-round-summary"> · {round.summary}</span>
-          )}
-        </span>
-        <ChevronRightIcon className="research-round-chevron" aria-hidden />
-      </CollapsibleTrigger>
-      <CollapsibleContent className="research-round-content">
-        <div className="research-round-body">{children}</div>
-      </CollapsibleContent>
-    </CollapsibleRoot>
+    <div ref={rootRef} onAnimationStart={(event) => {
+      if (event.target instanceof HTMLElement && event.target.dataset.slot === "collapsible-content") lockScroll();
+    }}>
+      <RunActivity
+        className="research-process"
+        status={phase}
+        statusLabel={`${running ? "正在查找依据" : stopped ? "查找已停止" : "已完成查找"}${searches ? ` · ${searches} 轮检索` : ""}${custom?.status?.evidence ? ` · ${custom.status.evidence} 段依据` : ""}`}
+        durationLabel={custom?.elapsed ? `· ${Math.max(1, Math.round(custom.elapsed / 1000))} 秒` : undefined}
+        open={manualOpen ?? running}
+        onOpenChange={setManualOpen}
+        entries={entries}
+      />
+    </div>
   );
 }

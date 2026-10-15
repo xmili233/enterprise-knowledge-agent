@@ -18,23 +18,31 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import overview from "@/content/design/overview.md?raw";
+import scenarios from "@/content/design/scenarios.md?raw";
+import priorities from "@/content/design/priorities.md?raw";
+import references from "@/content/design/references.md?raw";
 import ingestion from "@/content/design/ingestion.md?raw";
 import retrieval from "@/content/design/retrieval.md?raw";
 import citations from "@/content/design/citations.md?raw";
 import boundaries from "@/content/design/boundaries.md?raw";
+import evals from "@/content/design/evals.md?raw";
 import implementation from "@/content/design/implementation.md?raw";
 import "./design-guide.css";
 
 const chapters = [
-  { id: "overview", title: "产品与场景", content: overview },
+  { id: "overview", title: "概览", content: overview },
+  { id: "scenarios", title: "场景拆解", content: scenarios },
+  { id: "priorities", title: "准确性优先", content: priorities },
+  { id: "references", title: "参考项目", content: references },
   { id: "ingestion", title: "资料入库", content: ingestion },
   { id: "retrieval", title: "检索与补查", content: retrieval },
-  { id: "citations", title: "引用与原文", content: citations },
-  { id: "boundaries", title: "能力边界", content: boundaries },
-  { id: "implementation", title: "演示与实际实现", content: implementation },
+  { id: "citations", title: "引用与核对", content: citations },
+  { id: "boundaries", title: "权限与边界", content: boundaries },
+  { id: "evals", title: "评估与观测", content: evals },
+  { id: "implementation", title: "实现与取舍", content: implementation },
 ];
 let diagramId = 0;
-function Mermaid({ children }: { children: string }) {
+function Mermaid({ children, label }: { children: string; label: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState(false);
   useEffect(() => {
@@ -70,15 +78,18 @@ function Mermaid({ children }: { children: string }) {
       className="guide-diagram"
       ref={ref}
       role="img"
-      aria-label="检索问答流程图"
+      aria-label={`${label}图示`}
     />
   );
 }
-function Markdown({ children }: { children: string }) {
+// The chapter title is the section's h2, so the chapter's own headings start at h3.
+function Markdown({ children, label }: { children: string; label: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
+        h2: ({ children }) => <h3>{children}</h3>,
+        h3: ({ children }) => <h4>{children}</h4>,
         pre: ({ children }) =>
           isValidElement<{ className?: string }>(children) &&
           children.props.className === "language-mermaid" ? (
@@ -88,7 +99,7 @@ function Markdown({ children }: { children: string }) {
           ),
         code: ({ className, children }) =>
           className === "language-mermaid" ? (
-            <Mermaid>{String(children).trim()}</Mermaid>
+            <Mermaid label={label}>{String(children).trim()}</Mermaid>
           ) : (
             <code className={className}>{children}</code>
           ),
@@ -177,7 +188,7 @@ export default function DesignGuide({
         <header className="guide-header">
           <DialogTitle>设计讲解</DialogTitle>
           <DialogDescription className="sr-only">
-            企业知识助手的产品流程、实现方式及能力边界
+            企业知识助手的场景拆解、准确性取舍、Agent 设计与当前实现
           </DialogDescription>
           <DialogClose asChild>
             <Button variant="ghost" size="icon" aria-label="关闭设计讲解">
@@ -212,8 +223,10 @@ export default function DesignGuide({
                   className="guide-chapter"
                   id={`design-${item.id}`}
                   key={item.id}
+                  aria-labelledby={`design-title-${item.id}`}
                 >
-                  <Markdown>{item.content}</Markdown>
+                  <h2 id={`design-title-${item.id}`}>{item.title}</h2>
+                  <Markdown label={item.title}>{item.content}</Markdown>
                 </section>
               ))}
             </article>

@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { PreviewCard } from "@base-ui/react/preview-card";
+import { FileTextIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { floating, mono } from "./surfaces";
 
@@ -40,13 +41,12 @@ export function Citation({
       <PreviewCard.Trigger
         delay={0}
         render={<button type="button" {...props} />}
+        data-slot="inline-citation-marker"
         aria-label={`引用 ${index + 1}：${source.title}`}
-        className={cn(
-          "bg-foreground/[0.06] text-muted-foreground hover:text-foreground/90 data-[popup-open]:bg-foreground data-[popup-open]:text-background ms-0.5 inline-flex h-4 min-w-4 translate-y-[-2px] cursor-pointer items-center justify-center rounded-[5px] px-1 align-middle font-mono text-[10px] font-medium tabular-nums transition-colors motion-reduce:transition-none",
-          className,
-        )}
+        className={cn("citation-marker", className)}
       >
-        {index + 1}
+        <FileTextIcon size={14} strokeWidth={1.8} aria-hidden />
+        <span>{index + 1}</span>
       </PreviewCard.Trigger>
       <PreviewCard.Portal>
         <PreviewCard.Positioner side="top" sideOffset={8}>

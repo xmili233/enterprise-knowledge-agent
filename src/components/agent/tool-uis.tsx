@@ -44,12 +44,13 @@ export const GatherEvidenceUI = makeAssistantToolUI<
   EvidenceResult
 >({
   toolName: "gather_evidence",
-  render: function GatherEvidence({ result, status }) {
+  render: function GatherEvidence({ args, result, status }) {
     const openSource = useOpenSource();
     if (!result && status.type !== "running")
       return <Stopped label="收集证据" />;
     return (
       <RetrievalChunks
+        query={args.question ?? ""}
         cutoff={result?.cutoff ?? 5}
         searching={!result}
         chunks={(result?.items ?? []).map((item) => ({
@@ -57,7 +58,7 @@ export const GatherEvidenceUI = makeAssistantToolUI<
           source: item.title,
           locator: `${item.heading.split(" · ").at(-1)} · 第 ${item.page} 页`,
           score: item.score,
-          text: item.summary,
+          summary: item.summary,
           kept: item.kept,
         }))}
         onSelect={(ref) => {

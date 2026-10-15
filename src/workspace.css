@@ -21,7 +21,8 @@
 .workspace-brand {
   display: inline-flex;
   align-items: center;
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
   gap: 8px;
   color: var(--ink);
   font-size: var(--text-body);
@@ -29,14 +30,21 @@
   line-height: 24px;
   white-space: nowrap;
 }
-.new-chat-entry {
+.workspace-brand > svg { flex: none; }
+.workspace-brand > span { overflow: hidden; text-overflow: ellipsis; }
+.workspace-navigation { flex: none; }
+.workspace-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: 0;
   border-radius: var(--radius-control);
   min-height: 36px;
-  padding: 8px 10px;
+  padding: 6px;
   background: none;
   color: var(--secondary-ink);
   font-size: var(--text-label);
+  white-space: nowrap;
 }
 .assistant-section {
   display: flex;
@@ -77,7 +85,7 @@
 }
 .library-view {
   min-height: 100svh;
-  padding: 40px 32px 96px;
+  padding: 20px 32px 96px;
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
@@ -88,6 +96,23 @@
   max-width: var(--width-library);
   margin-inline: auto;
 }
+.library-navigation {
+  max-width: var(--width-library);
+  margin: 0 auto 16px;
+}
+.library-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 0;
+  border-radius: var(--radius-control);
+  color: var(--secondary-ink);
+  font-size: var(--text-label);
+  text-decoration: none;
+}
+.library-home-link > svg { flex: none; }
+.library-home-link:hover { color: var(--ink); }
 .storage-error {
   padding: 10px 24px;
   margin: 0;
@@ -98,7 +123,7 @@
   .knowledge-explore:hover {
     color: var(--ink);
   }
-  .new-chat-entry:hover {
+  .workspace-home-link:hover {
     color: var(--ink);
     background: var(--control-hover);
   }
@@ -110,7 +135,7 @@
   .workspace-header {
     padding: 0 18px;
   }
-  .new-chat-entry {
+  .workspace-home-link {
     min-height: 44px;
   }
   .assistant-section {
@@ -126,6 +151,8 @@
     padding: 8px 18px 16px;
   }
   .library-view {
-    padding: 28px 20px 64px;
+    padding: 12px 20px 64px;
   }
+  .library-home-link { min-height: 44px; }
+  .library-navigation { margin-bottom: 12px; }
 }

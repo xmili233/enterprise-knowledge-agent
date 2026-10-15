@@ -213,7 +213,7 @@ export function planRounds(plan: ResearchPlan) {
 /**
  * Local assistant-ui adapter that replays a scripted research run as real
  * message parts: reasoning, tool calls with results, then a cited answer.
- * Parts of one round share a `parentId`, so the UI can fold each round on its own.
+ * Parts of one round share a `parentId`, preserving the question each step investigates.
  */
 export const knowledgeAdapter = {
   async *run({ messages, abortSignal }) {

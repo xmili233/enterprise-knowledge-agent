@@ -69,6 +69,23 @@
   line-height: 26px;
   font-weight: 600;
 }
+.guide-chapter h4 {
+  margin: 22px 0 8px;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #222;
+}
+.guide-chapter strong {
+  font-weight: 600;
+  color: #222;
+}
+.guide-chapter blockquote {
+  margin: 18px 0;
+  padding: 1px 16px;
+  border-left: 2px solid #e2e2e2;
+  color: #6b6b6b;
+}
 .guide-chapter p,
 .guide-chapter li {
   font-size: 14px;

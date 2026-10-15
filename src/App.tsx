@@ -7,7 +7,7 @@ import {
   useRemoteThreadListRuntime,
   ThreadListPrimitive,
 } from "@assistant-ui/react";
-import { ArrowDown, BookOpen } from "lucide-react";
+import { ArrowDown, ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { KnowledgeAssistant } from "@/components/KnowledgeAssistant";
 import { KnowledgeLibrary } from "@/components/KnowledgeLibrary";
@@ -58,7 +58,7 @@ function Workspace() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const guideRef = useRef<HTMLButtonElement>(null);
   const libraryRef = useRef<HTMLDivElement>(null);
-  useSectionPaging(libraryRef);
+  useSectionPaging(libraryRef, empty);
   useAuiEvent("thread.historyWriteError", () => setStorageError(true));
 
   useEffect(() => {
@@ -80,21 +80,27 @@ function Workspace() {
       </a>
       <main id="main" className="workspace-main">
         <header className="workspace-header">
-          <div className="workspace-brand">
-            <BookOpen size={20} strokeWidth={1.7} aria-hidden="true" />
-            <span>企业内部知识助手</span>
-          </div>
           {!empty && (
-            <ThreadListPrimitive.Root>
-              <ThreadListPrimitive.New
-                className="new-chat-entry"
-                onClick={() => {
-                  document.getElementById("main")?.scrollIntoView({ behavior: "instant" });
-                }}
-              >
-                新对话
-              </ThreadListPrimitive.New>
-            </ThreadListPrimitive.Root>
+            <nav className="workspace-navigation" aria-label="聊天页面导航">
+              <ThreadListPrimitive.Root>
+                <ThreadListPrimitive.New
+                  className="workspace-home-link"
+                  onClick={() => {
+                    document.getElementById("main")?.scrollIntoView({ behavior: "instant" });
+                    requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+                  }}
+                >
+                  <ArrowLeft size={16} strokeWidth={1.7} aria-hidden="true" />
+                  <span>返回首页</span>
+                </ThreadListPrimitive.New>
+              </ThreadListPrimitive.Root>
+            </nav>
+          )}
+          {empty && (
+            <div className="workspace-brand">
+              <BookOpen size={20} strokeWidth={1.7} aria-hidden="true" />
+              <span>企业内部知识助手</span>
+            </div>
           )}
           <Button
             ref={guideRef}
@@ -125,11 +131,23 @@ function Workspace() {
             </div>
           )}
         </section>
-        <div ref={libraryRef} id="knowledge-library" className="library-view" tabIndex={-1}>
-          <KnowledgeLibrary
-            onOpenDocument={(id) => setSource({ id })}
-          />
-        </div>
+        {empty && (
+          <div ref={libraryRef} id="knowledge-library" className="library-view" tabIndex={-1}>
+            <nav className="library-navigation" aria-label="知识库页面导航">
+              <a
+                href="#main"
+                className="library-home-link"
+                onClick={() => requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }))}
+              >
+                <ArrowLeft size={16} strokeWidth={1.7} aria-hidden="true" />
+                <span>返回首页</span>
+              </a>
+            </nav>
+            <KnowledgeLibrary
+              onOpenDocument={(id) => setSource({ id })}
+            />
+          </div>
+        )}
       </main>
       <SourcePanel view={source} setView={setSource} />
       {chapter !== null && (

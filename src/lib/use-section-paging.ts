@@ -18,8 +18,9 @@ function scrollsInside(target: Element, direction: number) {
   );
 }
 
-export function useSectionPaging(libraryRef: RefObject<HTMLElement | null>) {
+export function useSectionPaging(libraryRef: RefObject<HTMLElement | null>, enabled: boolean) {
   useEffect(() => {
+    if (!enabled) return;
     let releaseTimer: ReturnType<typeof setTimeout>;
     let wheelLocked = false;
     let wheelDistance = 0;
@@ -128,5 +129,5 @@ export function useSectionPaging(libraryRef: RefObject<HTMLElement | null>) {
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchCancel);
     };
-  }, [libraryRef]);
+  }, [libraryRef, enabled]);
 }

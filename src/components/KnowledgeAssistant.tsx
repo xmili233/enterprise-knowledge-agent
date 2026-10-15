@@ -6,7 +6,6 @@ import {
   useState,
 } from "react";
 import {
-  ActionBarPrimitive,
   ComposerPrimitive,
   MessagePrimitive,
   type PartState,
@@ -17,16 +16,10 @@ import {
 import {
   ArrowDown,
   ArrowUp,
-  Check,
-  Copy,
   RotateCcw,
   Square,
 } from "lucide-react";
-import { Reasoning } from "@/components/assistant-ui/elements/reasoning.aui";
-import {
-  ResearchProcess,
-  ResearchRound,
-} from "@/components/agent/research-process";
+import { ResearchProcess } from "@/components/agent/research-process";
 import { AnswerText } from "@/components/agent/answer-text";
 import { AnswerFooter } from "@/components/agent/answer-footer";
 import { guidedQuestions } from "@/lib/research";
@@ -289,21 +282,13 @@ function KnowledgeComposer({ inputRef, onBeforeSend }: Props & { onBeforeSend: (
   );
 }
 
-// Reasoning and tool calls form the research process; parts sharing a
-// `parentId` (one research round) fold together.
+// A reply's activity stays in one disclosure; its answer remains outside.
 const groupBy = (part: PartState): readonly `group-${string}`[] =>
   part.type === "reasoning" || part.type === "tool-call"
-    ? ["group-process", `group-${part.parentId ?? "round"}`]
+    ? ["group-process"]
     : [];
 
 function AssistantMessage() {
-  const aui = useAui();
-  const busy = useAuiState((s) => s.thread.isRunning);
-  const isLast = useAuiState((s) => s.message.isLast);
-  const copied = useAuiState((s) => s.message.isCopied);
-  const hasText = useAuiState((s) =>
-    s.message.parts.some((part) => part.type === "text"),
-  );
   // A real model takes a moment before its first token; show that wait.
   const waiting = useAuiState(
     (s) =>
@@ -321,22 +306,10 @@ function AssistantMessage() {
         </p>
       )}
       <MessagePrimitive.GroupedParts groupBy={groupBy}>
-        {({ part, children }) => {
+        {({ part }) => {
           if (part.type === "group-process")
-            return <ResearchProcess>{children}</ResearchProcess>;
-          if (part.type.startsWith("group-"))
-            return (
-              <ResearchRound id={part.type.slice("group-".length)}>
-                {children}
-              </ResearchRound>
-            );
+            return <ResearchProcess indices={part.indices} />;
           switch (part.type) {
-            case "reasoning":
-              return (
-                <div className="round-thought">
-                  <Reasoning {...part} />
-                </div>
-              );
             case "tool-call":
               return part.toolUI ?? null;
             case "text":
@@ -347,31 +320,6 @@ function AssistantMessage() {
         }}
       </MessagePrimitive.GroupedParts>
       <AnswerFooter />
-      <ActionBarPrimitive.Root hideWhenRunning className="assistant-actions">
-        {hasText && (
-          <ActionBarPrimitive.Copy
-            className="assistant-action"
-            aria-label={copied ? "已复制回答" : "复制回答"}
-            title={copied ? "已复制" : "复制回答"}
-          >
-            {copied ? <Check size={15} /> : <Copy size={15} />}
-          </ActionBarPrimitive.Copy>
-        )}
-        {isLast && (
-          <ActionBarPrimitive.Reload
-            className="assistant-action assistant-reload"
-            aria-label="重新查找"
-            disabled={busy}
-            onClick={(event) => {
-              event.preventDefault();
-              aui.message.reload();
-            }}
-          >
-            <RotateCcw size={14} />
-            <span>重新查找</span>
-          </ActionBarPrimitive.Reload>
-        )}
-      </ActionBarPrimitive.Root>
     </MessagePrimitive.Root>
   );
 }

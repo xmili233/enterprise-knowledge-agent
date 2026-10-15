@@ -75,13 +75,13 @@ export function SourcePanel({
           </div>
           <SheetTitle>{doc?.title ?? "资料阅读"}</SheetTitle>
           <SheetDescription id="source-description">
-            虚构演示文件 · 可核对章节与原文内容
+            可核对章节与原文内容
           </SheetDescription>
         </SheetHeader>
         {doc && (
           <div className="source-scroll" ref={scrollRef}>
             <div className="document-meta">
-              <Badge variant="secondary">演示版本 v{doc.version}</Badge>
+              <Badge variant="secondary">v{doc.version}</Badge>
               <span>{doc.code}</span>
               <span>更新于 {doc.updated}</span>
             </div>
@@ -176,7 +176,7 @@ function DocumentReader({
 }) {
   return (
     <article className="document-paper" aria-label={doc.title}>
-      <p className="document-company">澄明科技 · 虚构企业资料</p>
+      <p className="document-company">澄明科技</p>
       <h2>{doc.title}</h2>
       {doc.passages.map((passage) => {
         const marks = highlights.filter((item) => item.passageId === passage.id);
@@ -206,7 +206,7 @@ function DocumentReader({
           </section>
         );
       })}
-      <p className="document-end">文档节选结束 · 仅供交互演示</p>
+      <p className="document-end">文档节选结束</p>
     </article>
   );
 }
