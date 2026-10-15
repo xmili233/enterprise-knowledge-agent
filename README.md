@@ -4,7 +4,11 @@
 
 ## 项目阶段
 
-当前已实现可运行的前端交互演示，尚未部署公开在线体验。
+当前已实现可运行的前端交互演示，并通过 GitHub Pages 提供在线体验，无需安装或注册：
+
+- [打开企业知识助手](https://xmili233.github.io/enterprise-knowledge-agent/)
+- [直接阅读设计讲解](https://xmili233.github.io/enterprise-knowledge-agent/#design/overview)
+- [查看源代码](https://github.com/xmili233/enterprise-knowledge-agent)
 
 首阶段以可交互的前端演示呈现完整使用流程，使用明确标注的虚构企业资料与预设问答。真实文档解析、检索、模型调用和企业权限系统属于后续接入范围。
 
@@ -159,4 +163,8 @@ assistant-ui 是本项目实际使用的前端会话框架，不提供企业文�
 
 设计规范由 [gstack design-consultation](https://github.com/garrytan/gstack/tree/main/design-consultation) 工作流结合用户确认的参考图制定，见 [DESIGN.md](DESIGN.md)。颜色、主要尺寸与圆角统一在 `src/design-tokens.css`，项目 `AGENTS.md` 要求后续视觉修改遵守这份规范。组件及布局参数是本项目自己的实现，不代表 OpenAI 官方组件规范。
 
-在线体验：未部署；当前通过上述命令本地运行。
+### 部署到 GitHub Pages
+
+所有功能都在浏览器中完成，构建产物是静态站点，由 GitHub Pages 托管；不需要部署模型服务、后端或数据库。
+
+推送到 `main` 后，[GitHub Actions 工作流](./.github/workflows/deploy.yml)会安装依赖、运行测试、构建站点，再把 `dist/` 发布到 GitHub Pages；也可以在 [Actions 页面](https://github.com/xmili233/enterprise-knowledge-agent/actions/workflows/deploy.yml)手动触发。线上构建使用 `npm run build -- --base=/enterprise-knowledge-agent/`，仓库的 **Settings → Pages → Source** 配置为 **GitHub Actions**。在线版本的问答记录同样只保存在访问者自己的浏览器中。
