@@ -1,0 +1,131 @@
+.app-shell {
+  min-height: 100dvh;
+}
+.workspace-main {
+  min-width: 0;
+  background: var(--canvas);
+}
+/* The header belongs to the first screen and scrolls away with it. */
+.workspace-header {
+  display: flex;
+  align-items: center;
+  height: var(--height-header);
+  gap: 12px;
+  padding: 0 24px;
+  background: var(--canvas);
+}
+.workspace-header .design-entry {
+  margin-left: auto;
+  flex: none;
+}
+.workspace-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  color: var(--ink);
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 24px;
+  white-space: nowrap;
+}
+.new-chat-entry {
+  border: 0;
+  border-radius: var(--radius-control);
+  min-height: 36px;
+  padding: 8px 10px;
+  background: none;
+  color: var(--secondary-ink);
+  font-size: var(--text-label);
+}
+.assistant-section {
+  display: flex;
+  flex-direction: column;
+  height: calc(100svh - var(--height-header));
+  min-height: 440px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  scroll-margin-top: var(--height-header);
+}
+.chat-view {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  padding: 0 40px;
+}
+.knowledge-explore-wrap {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 24px 24px;
+}
+.knowledge-explore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: var(--muted-ink);
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  text-decoration: none;
+  border-radius: var(--radius-control);
+  transition: color 150ms ease;
+}
+.library-view {
+  min-height: 100svh;
+  padding: 40px 32px 96px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.library-view:focus {
+  outline: none;
+}
+.library-view .knowledge-section {
+  max-width: var(--width-library);
+  margin-inline: auto;
+}
+.storage-error {
+  padding: 10px 24px;
+  margin: 0;
+  color: var(--error);
+  font-size: var(--text-caption);
+}
+@media (hover: hover) and (pointer: fine) {
+  .knowledge-explore:hover {
+    color: var(--ink);
+  }
+  .new-chat-entry:hover {
+    color: var(--ink);
+    background: var(--control-hover);
+  }
+}
+@media (max-width: 768px) {
+  .app-shell {
+    --height-header: 60px;
+  }
+  .workspace-header {
+    padding: 0 18px;
+  }
+  .new-chat-entry {
+    min-height: 44px;
+  }
+  .assistant-section {
+    min-height: 420px;
+  }
+  .chat-view {
+    padding: 0 20px;
+  }
+  .assistant-footer {
+    padding-bottom: 14px;
+  }
+  .knowledge-explore-wrap {
+    padding: 8px 18px 16px;
+  }
+  .library-view {
+    padding: 28px 20px 64px;
+  }
+}

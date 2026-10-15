@@ -1,0 +1,223 @@
+.design-dialog[data-slot="dialog-content"] {
+  width: calc(100vw - 48px);
+  max-width: 1280px;
+  height: min(960px, calc(100dvh - 48px));
+  padding: 0;
+  gap: 0;
+  border: none;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  color: #303030;
+  box-shadow: 0 18px 72px rgb(0 0 0 / 18%);
+}
+.guide-header {
+  height: 44px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 0 24px;
+}
+.guide-header [data-slot="dialog-title"] {
+  font-size: 14px;
+  font-weight: 500;
+}
+.guide-header button {
+  width: 30px;
+  height: 30px;
+}
+.guide-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  padding: 16px 16px 0 0;
+}
+.guide-reading {
+  overflow-y: auto;
+  flex: 1;
+  min-width: 0;
+  padding: 0 24px 60px;
+  outline: 0;
+}
+.guide-reading > article {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+.guide-chapter {
+  scroll-margin-top: 12px;
+  padding: 6px 0 26px;
+}
+.guide-chapter + .guide-chapter {
+  margin-top: 16px;
+  border-top: 1px solid #eee;
+  padding-top: 38px;
+}
+.guide-chapter h2 {
+  margin: 0 0 23px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.guide-chapter h3 {
+  margin: 28px 0 10px;
+  font-size: 17px;
+  line-height: 26px;
+  font-weight: 600;
+}
+.guide-chapter p,
+.guide-chapter li {
+  font-size: 14px;
+  line-height: 26px;
+}
+.guide-chapter p {
+  margin: 12px 0;
+}
+.guide-chapter ul,
+.guide-chapter ol {
+  padding-left: 23px;
+  margin: 14px 0;
+}
+.guide-chapter ul {
+  list-style: disc;
+}
+.guide-chapter ol {
+  list-style: decimal;
+}
+.guide-chapter li + li {
+  margin-top: 7px;
+}
+.guide-chapter a {
+  color: #333;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #a5a5a5;
+}
+.guide-chapter a:hover {
+  text-decoration-color: #222;
+}
+.guide-chapter code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.87em;
+  background: #f3f3f3;
+  padding: 3px 5px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+.guide-chapter pre {
+  overflow: auto;
+  background: #f6f6f6;
+  border-radius: 8px;
+  padding: 18px;
+  font-size: 12px;
+  line-height: 24px;
+}
+.guide-chapter pre code {
+  padding: 0;
+  background: none;
+}
+.guide-table {
+  overflow-x: auto;
+  margin: 18px 0;
+}
+.guide-table table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+  line-height: 24px;
+  min-width: 500px;
+}
+.guide-table th {
+  background: #f7f7f7;
+  text-align: left;
+  font-weight: 500;
+}
+.guide-table th,
+.guide-table td {
+  border-bottom: 1px solid #e8e8e8;
+  vertical-align: top;
+  padding: 10px 12px;
+}
+.guide-toc {
+  flex: 0 0 168px;
+  padding: 5px 0 0 16px;
+}
+.guide-toc p {
+  margin: 0 0 14px;
+  color: #858585;
+  font-size: 11px;
+}
+.guide-toc button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: 0;
+  font-size: 12px;
+  color: #777;
+  padding: 8px 0;
+  text-align: left;
+}
+.guide-toc button[aria-current] {
+  color: #171717;
+  font-weight: 600;
+}
+.guide-toc button:hover {
+  color: #171717;
+}
+.guide-mobile-select {
+  display: none;
+}
+.guide-diagram {
+  min-height: 120px;
+  overflow: auto;
+  padding: 20px 10px;
+  background: #fafafa;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.guide-diagram svg {
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+.diagram-fallback {
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 8px;
+}
+@media (max-width: 700px) {
+  .design-dialog[data-slot="dialog-content"] {
+    width: calc(100vw - 24px);
+    height: calc(100dvh - 24px);
+    border-radius: 12px;
+  }
+  .guide-header {
+    padding-left: 18px;
+  }
+  .guide-mobile-select {
+    display: block;
+    padding: 6px 18px 10px;
+  }
+  .guide-mobile-select [data-slot="select-trigger"] {
+    width: 100%;
+  }
+  .guide-toc {
+    display: none;
+  }
+  .guide-layout {
+    padding: 12px 0 0;
+  }
+  .guide-reading {
+    padding: 0 18px 40px;
+  }
+  .guide-reading > article {
+    padding: 0;
+  }
+  .guide-chapter h2 {
+    font-size: 22px;
+  }
+}

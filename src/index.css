@@ -1,0 +1,98 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+@import "./design-tokens.css";
+@import "tw-shimmer";
+
+@custom-variant dark (&:is(.dark *));
+@custom-variant data-open (&:is([data-state="open"], [data-state="active"], [open]));
+@custom-variant data-closed (&:is([data-state="closed"], [data-state="inactive"]));
+@custom-variant data-placeholder (&[data-placeholder]);
+@custom-variant data-disabled (&:is([data-disabled], :disabled));
+@custom-variant data-checked (&:is([data-state="checked"], [aria-checked="true"]));
+@custom-variant data-active (&[data-state="active"]);
+@custom-variant data-horizontal (&[data-orientation="horizontal"]);
+@custom-variant data-vertical (&[data-orientation="vertical"]);
+
+@theme inline {
+  --font-sans: var(--font-ui);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --animate-shimmer: shimmer-sweep var(--shimmer-duration, 1000ms) linear infinite both;
+  @keyframes shimmer-sweep {
+  from {
+    background-position: 150% 0;
+    }
+  to {
+    background-position: -100% 0;
+    }
+  }
+  @keyframes collapsible-down {
+  from {
+    height: 0;
+    }
+  to {
+    height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
+    }
+  }
+  @keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height, var(--collapsible-panel-height, auto));
+    }
+  to {
+    height: 0;
+    }
+  }
+}
+
+:root {
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--canvas);
+  --popover: var(--canvas);
+  --primary: var(--ink);
+  --primary-foreground: var(--canvas);
+  --secondary: #f3f3f3;
+  --muted: #f5f5f5;
+  --muted-foreground: var(--muted-ink);
+  --accent: var(--control-hover);
+  --destructive: var(--error);
+  --border: var(--hairline);
+  --input: #dedede;
+  --ring: #8a8a8a;
+  --radius: 10px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@custom-variant data-open (&:where([data-state="open"], [data-open]:not([data-open="false"])));
+
+@custom-variant data-closed (&:where([data-state="closed"], [data-closed]:not([data-closed="false"])));

@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-14T09:00:00+00:00",
+  "title": "Design System: 企业知识助手",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "canvas",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "ink",
+        "canonical": "#202020",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "text",
+        "canonical": "#333333",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "secondary",
+        "canonical": "#666666",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "muted",
+        "canonical": "#737373",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "line",
+        "canonical": "#e5e5e5",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "paper",
+        "canonical": "#fafafa",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "focus",
+        "canonical": "#666666",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "assistant-ink": {
+        "role": "primary",
+        "displayName": "assistant-ink",
+        "canonical": "#0d0d0d",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#999999",
+          "#bfbfbf",
+          "#dedede",
+          "#f4f4f4"
+        ]
+      },
+      "highlight": {
+        "role": "neutral",
+        "displayName": "原文高亮",
+        "canonical": "#f7eabe",
+        "tonalRamp": [
+          "#f7eabe"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "输入错误",
+        "canonical": "#a32c25",
+        "tonalRamp": [
+          "#a32c25"
+        ]
+      },
+      "sidebar": {
+        "role": "neutral",
+        "displayName": "侧边栏",
+        "canonical": "#f9f9f9",
+        "tonalRamp": [
+          "#f9f9f9",
+          "#eaeaea"
+        ]
+      },
+      "selected": {
+        "role": "neutral",
+        "displayName": "选中导航",
+        "canonical": "#eaeaea",
+        "tonalRamp": [
+          "#eaeaea"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "主标题",
+        "purpose": "居中欢迎语，桌面 30px、手机 25px。"
+      },
+      "body": {
+        "displayName": "阅读正文",
+        "purpose": "回答与来源的连续阅读。"
+      }
+    },
+    "shadows": [
+      {
+        "name": "guide",
+        "value": "0 18px 72px rgb(0 0 0 / 18%)",
+        "purpose": "设计讲解浮层。"
+      }
+    ],
+    "motion": [
+      {
+        "name": "feedback",
+        "value": "150ms ease",
+        "purpose": "目录 hover 反馈，减少动态效果设置下关闭。"
+      },
+      {
+        "name": "research-progress",
+        "value": "1.3s ease-in-out infinite",
+        "purpose": "模拟查找时圆点透明度反馈；减少动态效果时关闭。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "700px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "assistant-ui 的圆形发送与停止操作。",
+      "html": "<button class=\"ds-primary\" aria-label=\"发送问题\">↑</button>",
+      "css": ".ds-primary{display:flex;align-items:center;justify-content:center;background:#0d0d0d;color:#fff;width:36px;height:36px;border:0;border-radius:50%;cursor:pointer}.ds-primary:hover{background:#333}.ds-primary:disabled{background:#e8e8e8;color:#737373}"
+    },
+    {
+      "name": "Search field",
+      "kind": "input",
+      "description": "知识库目录搜索。",
+      "html": "<input class=\"ds-search\" aria-label=\"搜索知识库\" placeholder=\"搜索知识库\">",
+      "css": ".ds-search{width:190px;height:32px;border:0;border-bottom:1px solid #bcbcbc;background:#fff;color:#333;font-size:12px}.ds-search::placeholder{color:#737373}.ds-search:focus-visible{outline:2px solid #666;outline-offset:4px}"
+    },
+    {
+      "name": "Category tabs",
+      "kind": "nav",
+      "description": "只筛选浏览目录。",
+      "html": "<nav class=\"ds-tabs\"><button aria-current=\"page\">全部</button><button>制度规范</button><button>财务报销</button></nav>",
+      "css": ".ds-tabs{display:flex;gap:32px;border-bottom:1px solid #d7d7d7}.ds-tabs button{font-size:13px;color:#737373;border:0;background:none;padding:0 0 13px;height:43px;cursor:pointer}.ds-tabs button[aria-current]{color:#202020;border-bottom:2px solid #202020;font-weight:600}.ds-tabs button:hover{color:#202020}.ds-tabs button:focus-visible{outline:2px solid #666;outline-offset:3px}"
+    },
+    {
+      "name": "Citation",
+      "kind": "button",
+      "description": "数字引用定位到具体原文。",
+      "html": "<button class=\"ds-cite\" aria-label=\"查看引用 1 原文\">1</button>",
+      "css": ".ds-cite{border:0;border-radius:5px;background:#eee;color:#555;min-width:20px;height:20px;font-size:10px;cursor:pointer}.ds-cite:hover{background:#d8d8d8;color:#111}.ds-cite:focus-visible{outline:2px solid #666;outline-offset:3px}"
+    },
+    {
+      "name": "Question composer",
+      "kind": "custom",
+      "refersTo": "composer",
+      "description": "居中的三行输入框，只在右下方显示发送或停止。",
+      "html": "<div class=\"ds-composer\"><textarea aria-label=\"提问\" rows=\"3\" placeholder=\"询问制度、流程，或查找一份文件\"></textarea></div>",
+      "css": ".ds-composer{background:#fff;border:1px solid #e5e5e5;border-radius:28px;padding:17px 14px 12px 20px;max-width:760px}.ds-composer:focus-within{border-color:#929292}.ds-composer textarea{display:block;width:100%;resize:none;border:0;min-height:84px;font:16px/26px sans-serif;outline:0}.ds-composer textarea::placeholder{color:#737373}.ds-composer span{display:block;margin-top:10px;font-size:12px;color:#555}"
+    }
+  ],
+  "narrative": {
+    "northStar": "对话与知识的工作台",
+    "overview": "assistant-ui 标准侧边栏布局：左侧新建、知识库和历史，右侧聊天或资料。",
+    "keyCharacteristics": [
+      "稳定侧边导航",
+      "可恢复对话",
+      "克制黑白色",
+      "独立知识目录",
+      "可追溯引用"
+    ],
+    "rules": [],
+    "dos": [
+      "保留左侧导航、右侧内容结构。",
+      "历史记录可恢复，引用可追溯。",
+      "只显示实际可用操作。"
+    ],
+    "donts": [
+      "不恢复两栏口号与灰色大外壳。",
+      "不添加语音、附件和反馈空操作。",
+      "不把前端运行时宣称为真实检索或后端 Agent。",
+      "不恢复左上标题、范围选择、示例问题与输入框下提示。"
+    ]
+  }
+}

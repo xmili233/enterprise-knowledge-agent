@@ -1,0 +1,293 @@
+.knowledge-assistant {
+  --assistant-ink: var(--ink);
+  --assistant-muted: var(--secondary-ink);
+  --assistant-line: var(--hairline);
+  display: flex;
+  position: relative;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  color: var(--assistant-ink);
+}
+.assistant-welcome {
+  flex: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.assistant-welcome h1,
+.assistant-welcome-exit {
+  margin: 0 0 32px;
+  font-size: var(--text-display);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: normal;
+}
+.assistant-welcome-exit {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  text-align: center;
+  pointer-events: none;
+}
+.assistant-footer,
+.assistant-answer,
+.assistant-user-message {
+  width: 100%;
+  max-width: var(--width-conversation);
+  margin-inline: auto;
+}
+.assistant-composer {
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+  background: var(--canvas);
+  border: 1px solid var(--assistant-line);
+  border-radius: var(--radius-composer);
+  padding: 18px 16px 12px 22px;
+  box-shadow: 0 2px 5px rgb(0 0 0 / 3%);
+  transition: border-color 150ms ease;
+}
+.assistant-composer:focus-within {
+  border-color: var(--focus);
+}
+.has-messages .assistant-composer {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+  min-height: 56px;
+  padding: 9px 9px 9px 22px;
+}
+.assistant-input {
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 6px 6px 0;
+  outline: none;
+  box-shadow: none;
+  color: var(--assistant-ink);
+  caret-color: var(--assistant-ink);
+  font-size: var(--text-body);
+  line-height: 26px;
+}
+.has-messages .assistant-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  padding: 5px 0;
+}
+.assistant-input:focus-visible {
+  outline: none;
+}
+.assistant-input::placeholder {
+  color: var(--muted-ink);
+}
+.assistant-composer-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.has-messages .assistant-composer-bottom {
+  flex: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+.assistant-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--height-icon-button);
+  width: var(--height-icon-button);
+  height: var(--height-icon-button);
+  margin-left: auto;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--assistant-ink);
+}
+.assistant-send:hover {
+  background: #333;
+}
+.assistant-send:disabled {
+  background: #e8e8e8;
+  color: #737373;
+}
+.assistant-input[readonly] {
+  cursor: default;
+}
+.assistant-restart {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--height-icon-button);
+  margin-left: auto;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--assistant-ink);
+  font-size: var(--text-label);
+  white-space: nowrap;
+}
+.assistant-restart:hover {
+  background: #333;
+}
+.assistant-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 0 0;
+  scroll-padding-bottom: 110px;
+}
+.is-empty .assistant-viewport {
+  justify-content: center;
+  padding: 0 0 32px;
+}
+.is-empty .assistant-footer {
+  position: static;
+  margin-top: 0;
+  padding: 0;
+}
+.assistant-user-message,
+.assistant-answer {
+  animation: assistant-message-enter var(--duration-message) var(--ease-out) both;
+}
+.assistant-user-message {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 26px;
+}
+.assistant-user-bubble {
+  max-width: 78%;
+  border-radius: var(--radius-message);
+  padding: 12px 19px;
+  background: var(--message-background);
+  color: var(--assistant-ink);
+  font-size: var(--text-body);
+  line-height: 26px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.assistant-answer {
+  margin-bottom: 28px;
+}
+.assistant-starting {
+  margin: 0;
+  min-height: 32px;
+  color: var(--assistant-muted);
+  font-size: var(--text-label);
+}
+.assistant-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 16px 0 0 -7px;
+}
+.assistant-action {
+  border: 0;
+  background: none;
+  border-radius: 7px;
+  min-height: 32px;
+  min-width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 8px;
+  color: #666;
+  font-size: 11px;
+}
+.assistant-action:hover {
+  color: var(--assistant-ink);
+  background: #f3f3f3;
+}
+.assistant-action:disabled {
+  opacity: 0.5;
+}
+.assistant-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding-top: 12px;
+  padding-bottom: 24px;
+  background: #fff;
+}
+.assistant-scroll-bottom {
+  position: absolute;
+  top: -36px;
+  left: calc(50% - 16px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--assistant-line);
+  background: #fff;
+  border-radius: 50%;
+}
+.assistant-scroll-bottom:disabled {
+  display: none;
+}
+@keyframes assistant-message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 768px) {
+  .is-empty .assistant-viewport {
+    padding: 0 0 24px;
+  }
+  .assistant-welcome h1,
+  .assistant-welcome-exit {
+    font-size: var(--text-display-mobile);
+    line-height: 36px;
+    margin-bottom: 28px;
+    letter-spacing: normal;
+  }
+  .assistant-composer {
+    padding: 16px 14px 12px 18px;
+    border-radius: 24px;
+  }
+  .has-messages .assistant-composer {
+    padding: 8px 8px 8px 18px;
+    min-height: 54px;
+  }
+  .assistant-input {
+    font-size: var(--text-body);
+  }
+  .assistant-viewport {
+    padding: 22px 2px 0;
+    min-height: 0;
+  }
+  .assistant-user-bubble {
+    max-width: 88%;
+    font-size: var(--text-body);
+    padding: 10px 16px;
+  }
+}
+@media (max-height: 600px) {
+  .is-empty .assistant-viewport {
+    padding-bottom: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-composer {
+    transition: none;
+  }
+}
